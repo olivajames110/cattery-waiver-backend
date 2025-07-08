@@ -255,6 +255,60 @@ router.get("/users/all", async (req, res) => {
   }
 });
 
+router.get("/wake-up", async (req, res) => {
+  try {
+    console.log(
+      "Server wake-up request received at:",
+      new Date().toISOString()
+    );
+
+    // You can optionally do a simple database ping to fully wake up all services
+    // const waiversCount = await Waiver.countDocuments();
+    // console.log("Database connection verified, total waivers:", waiversCount);
+
+    res.status(200).json({
+      success: true,
+      message: "Server is awake",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Error in wake-up endpoint:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error waking up server",
+      error: error.message,
+    });
+  }
+});
+
+// Alternative: If you want to include a database ping to ensure full wake-up
+router.get("/wake-up-with-db", async (req, res) => {
+  try {
+    console.log(
+      "Server wake-up request received at:",
+      new Date().toISOString()
+    );
+
+    // Ping the database to ensure it's also awake
+    const waiversCount = await Waiver.countDocuments();
+    console.log("Database connection verified, total waivers:", waiversCount);
+
+    res.status(200).json({
+      success: true,
+      message: "Server and database are awake",
+      timestamp: new Date().toISOString(),
+      waiversCount: waiversCount,
+    });
+  } catch (error) {
+    console.error("Error in wake-up endpoint:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error waking up server",
+      error: error.message,
+    });
+  }
+});
+
 // Add this endpoint to your routes/waivers.js file
 
 module.exports = router;
